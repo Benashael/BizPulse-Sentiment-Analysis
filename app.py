@@ -6,7 +6,7 @@ from textblob import TextBlob
 import nltk
 from nltk.sentiment import SentimentIntensityAnalyzer
 nltk.download('vader_lexicon')
-nltk.download('punkt')
+nltk.download('punkt_tab')
 
 # Initialize Sentiment Intensity Analyzer
 sia = SentimentIntensityAnalyzer()
