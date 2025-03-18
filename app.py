@@ -6,7 +6,7 @@ from textblob import TextBlob
 import nltk
 from nltk.sentiment import SentimentIntensityAnalyzer
 nltk.download('vader_lexicon')
-nltk.download('punkt_tab')
+nltk.download('punkt')
 
 # Initialize Sentiment Intensity Analyzer
 sia = SentimentIntensityAnalyzer()
@@ -68,11 +68,12 @@ if input_type == "Text Input":
 
 elif input_type == "CSV File":
     st.subheader("Upload CSV File for Batch Sentiment Analysis")
-    uploaded_file = st.file_uploader("Upload a CSV file containing a 'text' column", type=["csv"])
+    uploaded_file = st.file_uploader("Upload a CSV file", type=["csv"])
     if uploaded_file:
         df = pd.read_csv(uploaded_file)
-        if "text" in df.columns:
-            df["TextBlob_Score"], df["VADER_Score"], df["Sentiment"] = zip(*df["text"].apply(analyze_sentiment))
+        column = st.selectbox("Select the text column", df.columns)
+        if df[column].dtype == 'object':
+            df["TextBlob_Score"], df["VADER_Score"], df["Sentiment"] = zip(*df[column].apply(analyze_sentiment))
             st.dataframe(df)
             
             # Sentiment Distribution Visualization
@@ -85,7 +86,7 @@ elif input_type == "CSV File":
             csv = df.to_csv(index=False).encode("utf-8")
             st.download_button("Download Processed CSV", csv, "sentiment_results.csv", "text/csv")
         else:
-            st.error("CSV must contain a 'text' column")
+            st.error("Selected column does not contain categorical text data.")
 
 elif input_type == "TXT File":
     st.subheader("Upload TXT File for Sentence Tokenization and Sentiment Analysis")
